@@ -1,6 +1,14 @@
+---
+status: done
+baseline_revision: ddf051225bb62ad4b8452f2f04e6517173211c3a
+review_loop_iteration: 0
+followup_review_recommended: false
+final_revision: 995d13d30fd91c3d1c07ee9c15d09410d6361b7a
+---
+
 # Story 1.1: Build the Complete Monthly Liked-Songs Sync Pipeline
 
-Status: ready-for-dev
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -58,32 +66,32 @@ so that I have a personal mixtape for each month without manual upkeep.
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Project scaffold** (AC: 1, 10)
-  - [ ] Create `requirements.txt` with `ytmusicapi` (pin `>=1.12.1,<2`)
-  - [ ] Create `.gitignore` entry for local `browser.json` if used during dev (optional but recommended)
-  - [ ] Do **not** add `last_synced.json` to repo
+- [x] **Task 1: Project scaffold** (AC: 1, 10)
+  - [x] Create `requirements.txt` with `ytmusicapi` (pin `>=1.12.1,<2`)
+  - [x] Create `.gitignore` entry for local `browser.json` if used during dev (optional but recommended)
+  - [x] Do **not** add `last_synced.json` to repo
 
-- [ ] **Task 2: Implement `main.py` sync logic** (AC: 3–8)
-  - [ ] Load `YT_AUTH_HEADERS` env var → initialize `YTMusic`
-  - [ ] `build_playlist_title()` using UTC `datetime`
-  - [ ] `load_state()` / `save_state()` for `last_synced.json`
-  - [ ] `get_or_create_monthly_playlist(title)` via `get_library_playlists(limit=None)`
-  - [ ] `fetch_liked_tracks()` via `get_liked_songs(limit=...)`
-  - [ ] `collect_new_video_ids(tracks, anchor_id | None)` — walk until anchor; handle first-run & missing-anchor
-  - [ ] `add_new_songs(playlist_id, video_ids)` — batch `add_playlist_items(..., duplicates=False)`
-  - [ ] `write_job_summary(...)` → append Markdown to `$GITHUB_STEP_SUMMARY`
-  - [ ] Top-level `main()` with fail-fast: any API/state error → `sys.exit(1)` before commit step can run
+- [x] **Task 2: Implement `main.py` sync logic** (AC: 3–8)
+  - [x] Load `YT_AUTH_HEADERS` env var → initialize `YTMusic`
+  - [x] `build_playlist_title()` using UTC `datetime`
+  - [x] `load_state()` / `save_state()` for `last_synced.json`
+  - [x] `get_or_create_monthly_playlist(title)` via `get_library_playlists(limit=None)`
+  - [x] `fetch_liked_tracks()` via `get_liked_songs(limit=...)`
+  - [x] `collect_new_video_ids(tracks, anchor_id | None)` — walk until anchor; handle first-run & missing-anchor
+  - [x] `add_new_songs(playlist_id, video_ids)` — batch `add_playlist_items(..., duplicates=False)`
+  - [x] `write_job_summary(...)` → append Markdown to `$GITHUB_STEP_SUMMARY`
+  - [x] Top-level `main()` with fail-fast: any API/state error → `sys.exit(1)` before commit step can run
 
-- [ ] **Task 3: GitHub Actions workflow** (AC: 2, 11)
-  - [ ] `.github/workflows/sync.yml` with schedule + dispatch
-  - [ ] `actions/checkout@v4` with `token` for push
-  - [ ] `actions/setup-python@v5` with `python-version: '3.12'`
-  - [ ] Run `main.py` with `YT_AUTH_HEADERS: ${{ secrets.YT_AUTH_HEADERS }}`
-  - [ ] Conditional commit step: only if `last_synced.json` changed; `git add last_synced.json` only
+- [x] **Task 3: GitHub Actions workflow** (AC: 2, 11)
+  - [x] `.github/workflows/sync.yml` with schedule + dispatch
+  - [x] `actions/checkout@v4` with `token` for push
+  - [x] `actions/setup-python@v5` with `python-version: '3.12'`
+  - [x] Run `main.py` with `YT_AUTH_HEADERS: ${{ secrets.YT_AUTH_HEADERS }}`
+  - [x] Conditional commit step: only if `last_synced.json` changed; `git add last_synced.json` only
 
-- [ ] **Task 4: README** (AC: 9)
-  - [ ] Short, human-readable setup and ops guide
-  - [ ] Link to repo Actions tab for Job Summary
+- [x] **Task 4: README** (AC: 9)
+  - [x] Short, human-readable setup and ops guide
+  - [x] Link to repo Actions tab for Job Summary
 
 ## Dev Notes
 
@@ -301,3 +309,65 @@ No `project-context.md` found in repo. Primary sources:
 - Ultimate context engine analysis completed - comprehensive developer guide created
 
 ### File List
+
+- `main.py` — sync pipeline (auth, state, playlist, job summary)
+- `requirements.txt` — ytmusicapi dependency pin
+- `.github/workflows/sync.yml` — daily cron + manual dispatch workflow
+- `README.md` — setup and ops guide
+- `.gitignore` — ignore `browser.json`
+
+## Review Triage Log
+
+### 2026-07-06 — Review pass
+- intent_gap: 0
+- bad_spec: 0
+- patch: 6: (high 0, medium 2, low 4)
+- defer: 2: (high 0, medium 1, low 1)
+- reject: 12
+- addressed_findings:
+  - `[medium]` `[patch]` Validate `last_synced.json` JSON shape and use `.get("last_video_id")` to avoid KeyError on corrupt state
+  - `[medium]` `[patch]` Skip playlist create/lookup on anchor-reset runs (FR13 adds zero songs)
+  - `[low]` `[patch]` Fail fast when `setup()` returns falsy or JSON headers lack `Cookie`
+  - `[low]` `[patch]` Guard playlist lookup when `playlistId` is missing
+  - `[low]` `[patch]` Add workflow concurrency group to prevent overlapping runs
+  - `[low]` `[patch]` Fix README Actions tab links; assert `last_synced.json` exists before commit step
+
+## Auto Run Result
+
+Status: done
+
+### Summary
+
+Implemented the complete v1 monthly liked-songs sync pipeline: `main.py` with baseline/sync/anchor-reset modes, GitHub Actions workflow (midnight UTC cron + manual dispatch), `requirements.txt`, and README.
+
+### Files changed
+
+| File | Description |
+|------|-------------|
+| `main.py` | Full sync logic with ytmusicapi browser auth |
+| `requirements.txt` | Pins `ytmusicapi>=1.12.1,<2` |
+| `.github/workflows/sync.yml` | Scheduled and manual workflow with state commit |
+| `README.md` | Setup, ops, and known limits |
+| `.gitignore` | Ignores local `browser.json` |
+
+### Review findings
+
+- **Patches applied:** 6 (state validation, anchor-reset side effect, auth validation, playlist lookup guard, workflow concurrency, README links)
+- **Deferred:** 2 (stale `docs/architecture.md` vs epics; 500-track window limitation for very large backlogs)
+- **Rejected:** 12 (spec-compliant choices, v1 scope limits, or noise)
+
+### Follow-up review
+
+Not recommended — patches were localized hardening, no behavioral contract changes.
+
+### Verification
+
+- `python3 -m py_compile main.py` — passed
+- Manual inspection of workflow YAML against AC 2
+- Task checklist and acceptance criteria verified against implementation
+
+### Residual risks
+
+- Anchor older than 500 liked songs triggers baseline reset (documented FR13 behavior)
+- Cookie auth requires periodic manual refresh
+- No pagination beyond 500-track fetch window (acceptable per v1 spec)

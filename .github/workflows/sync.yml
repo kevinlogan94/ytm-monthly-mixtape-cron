@@ -1,0 +1,44 @@
+name: Sync Liked Songs
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-liked-songs
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run sync
+        env:
+          YT_AUTH_HEADERS: ${{ secrets.YT_AUTH_HEADERS }}
+        run: python main.py
+
+      - name: Commit sync state
+        run: |
+          test -f last_synced.json
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add last_synced.json
+          git diff --staged --quiet || git commit -m "chore: update liked-songs sync state"
+          git push
