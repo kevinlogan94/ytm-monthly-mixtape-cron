@@ -1,0 +1,8 @@
+.output
+dist
+.env
+
+.agents/
+.codex/
+
+_bmad/
