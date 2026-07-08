@@ -33,13 +33,13 @@ In GitHub: **Settings → Notifications → Actions** — enable email alerts fo
 
 ### 3. Run manually the first time
 
-Go to the [Actions tab](https://github.com/kevinlogan94/ytm-monthly-mixtape-cron/actions), open **Sync Liked Songs**, and click **Run workflow**. The first run establishes a baseline only.
+Go to the [Actions tab](https://github.com/kevinlogan94/ytmusic-monthly-mixtape/actions), open **Sync Liked Songs**, and click **Run workflow**. The first run establishes a baseline only.
 
 After you like a new song, run the workflow again (or wait for the daily schedule) to see it appear in the current month's playlist.
 
 ## Viewing results
 
-Open the [Actions tab](https://github.com/kevinlogan94/ytm-monthly-mixtape-cron/actions), click a workflow run, and read the **Job summary** at the bottom of the job page. It shows the run mode (baseline, sync, or anchor reset), playlist name, songs added, and any warnings.
+Open the [Actions tab](https://github.com/kevinlogan94/ytmusic-monthly-mixtape/actions), click a workflow run, and read the **Job summary** at the bottom of the job page. It shows the run mode (baseline, sync, or anchor reset), playlist name, songs added, and any warnings.
 
 ## Re-authentication
 

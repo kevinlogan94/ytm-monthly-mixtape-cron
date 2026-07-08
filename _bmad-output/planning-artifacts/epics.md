@@ -18,11 +18,11 @@ clarifications:
   python_version: "3.12"
 ---
 
-# ytm-monthly-mixtape-cron - Epic Breakdown
+# ytmusic-monthly-mixtape - Epic Breakdown
 
 ## Overview
 
-This document provides the complete epic and story breakdown for ytm-monthly-mixtape-cron, decomposing requirements from the Architecture document into implementable stories.
+This document provides the complete epic and story breakdown for ytmusic-monthly-mixtape, decomposing requirements from the Architecture document into implementable stories.
 
 ## Requirements Inventory
 

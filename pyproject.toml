@@ -1,5 +1,5 @@
 [project]
-name = "ytm-monthly-mixtape-cron"
+name = "ytmusic-monthly-mixtape"
 version = "0.1.0"
 description = "Daily sync of newly liked YouTube Music tracks into a monthly playlist"
 readme = "README.md"
