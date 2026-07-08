@@ -17,12 +17,12 @@ LIKED_SONGS_LIMIT = 500
 
 
 def build_playlist_title(now: datetime | None = None) -> str:
-    """Return the UTC monthly playlist title, e.g. July '26 - Liked Songs."""
+    """Return the UTC monthly playlist title, e.g. 2026 July - Liked Songs."""
     if now is None:
         now = datetime.now(timezone.utc)
+    year = now.strftime("%Y")
     month = now.strftime("%B")
-    year_short = now.strftime("'%y")
-    return f"{month} {year_short} - Liked Songs"
+    return f"{year} {month} - Liked Songs"
 
 
 def _load_auth_raw() -> str:

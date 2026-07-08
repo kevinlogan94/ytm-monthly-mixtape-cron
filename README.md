@@ -1,6 +1,6 @@
 # YouTube Music Monthly Liked-Songs Sync
 
-A daily GitHub Actions job that files newly liked YouTube Music tracks into a private monthly playlist (for example, `July '26 - Liked Songs`), so you get a personal mixtape each month without manual upkeep.
+A daily GitHub Actions job that files newly liked YouTube Music tracks into a private monthly playlist (for example, `2026 July - Liked Songs`), so you get a personal mixtape each month without manual upkeep.
 
 ## How it works
 

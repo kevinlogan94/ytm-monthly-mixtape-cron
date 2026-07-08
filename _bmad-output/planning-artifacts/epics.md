@@ -8,7 +8,7 @@ clarifications:
   requirements_source: docs/architecture.md (no PRD)
   epic_structure: 1 epic, 1 story
   schedule: "0 0 * * * (midnight UTC daily)"
-  playlist_title_format: "July '26 - Liked Songs"
+  playlist_title_format: "2026 July - Liked Songs"
   playlist_visibility: private
   first_run: baseline only, no backlog dump
   missing_sync_anchor: reset baseline, warn in summary, no adds
@@ -30,7 +30,7 @@ This document provides the complete epic and story breakdown for ytm-monthly-mix
 
 FR1: A daily automated job scans the user's YouTube Music liked songs via ytmusicapi.
 FR2: Newly liked songs since the last run are added to a playlist named for the current month.
-FR3: Monthly playlist titles follow the format `{Month} '{YY} - Liked Songs` (e.g. `July '26 - Liked Songs`).
+FR3: Monthly playlist titles follow the format `{YYYY} {Month} - Liked Songs` (e.g. `2026 July - Liked Songs`).
 FR4: The job finds an existing monthly playlist by title or creates a new private playlist if one does not exist.
 FR5: Sync is idempotent — re-running the job on the same day adds no duplicate songs.
 FR6: On first run (no `last_synced.json`), the job records the current most-recent liked-song video ID as baseline and adds nothing to any playlist.
@@ -75,7 +75,7 @@ Not applicable — v1 has no user interface. Observability is via GitHub Actions
 
 FR1: Epic 1 — Daily scan of liked songs via ytmusicapi
 FR2: Epic 1 — Add new likes to current month's playlist
-FR3: Epic 1 — Playlist title format `{Month} '{YY} - Liked Songs`
+FR3: Epic 1 — Playlist title format `{YYYY} {Month} - Liked Songs`
 FR4: Epic 1 — Find or create private monthly playlist
 FR5: Epic 1 — Idempotent sync (no duplicates on re-run)
 FR6: Epic 1 — First-run baseline snapshot, no backlog dump
@@ -124,7 +124,7 @@ So that I have a personal mixtape for each month without manual upkeep.
 **Given** `main.py` runs with valid `YT_AUTH_HEADERS`
 **When** the script executes
 **Then** it initializes ytmusicapi using the provided browser-cookie headers (FR1, NFR6)
-**And** it derives the current month's playlist title in the format `{Month} '{YY} - Liked Songs` using UTC (e.g. `July '26 - Liked Songs`) (FR3)
+**And** it derives the current month's playlist title in the format `{YYYY} {Month} - Liked Songs` using UTC (e.g. `2026 July - Liked Songs`) (FR3)
 
 **Given** the monthly playlist does not yet exist in the user's library
 **When** the script runs

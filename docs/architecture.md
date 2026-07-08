@@ -2,7 +2,7 @@
 
 ## 1. Overview
 A daily automated job that scans the user's YouTube Music liked songs and files newly-liked
-tracks into a playlist named for the current month (e.g. "Liked - July 2026"), replacing
+tracks into a playlist named for the current month (e.g. "2026 July - Liked Songs"), replacing
 reliance on YouTube's algorithmic seasonal playlists.
 
 ## 2. Goals & Constraints
@@ -42,7 +42,7 @@ No external servers, databases, or cloud accounts required beyond GitHub itself.
 
 ### 4.2 Core logic: main.py (Python + ytmusicapi)
 Sequence per run:
-1. Determine current month name from system date -> playlist title (e.g. "Liked - July 2026")
+1. Determine current month name from system date -> playlist title (e.g. "2026 July - Liked Songs")
 2. Call `get_library_playlists()`; if the month's playlist doesn't exist, `create_playlist()`
 3. Call `get_liked_songs()` (ordered most-recent-first)
 4. Read `last_synced.json` for the last-known most-recent video ID
