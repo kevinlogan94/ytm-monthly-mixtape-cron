@@ -1,0 +1,9 @@
+[project]
+name = "ytm-monthly-mixtape-cron"
+version = "0.1.0"
+description = "Daily sync of newly liked YouTube Music tracks into a monthly playlist"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ytmusicapi>=1.12.1,<2",
+]

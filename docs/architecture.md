@@ -114,7 +114,8 @@ Sequence per run:
 │   └── workflows/
 │       └── sync.yml
 ├── main.py
-├── requirements.txt
+├── pyproject.toml
+├── uv.lock
 ├── last_synced.json
 └── README.md
 ```

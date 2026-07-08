@@ -21,18 +21,18 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: '3.12'
+          enable-cache: true
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: uv sync --frozen --no-dev
 
       - name: Run sync
         env:
           YT_AUTH_HEADERS: ${{ secrets.YT_AUTH_HEADERS }}
-        run: python main.py
+        run: uv run python main.py
 
       - name: Commit sync state
         run: |

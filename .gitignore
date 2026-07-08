@@ -1,6 +1,8 @@
+.venv/
 .output
 dist
 .env
+auth.headers.json
 browser.json
 
 .agents/

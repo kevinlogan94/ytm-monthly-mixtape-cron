@@ -25,33 +25,61 @@ def build_playlist_title(now: datetime | None = None) -> str:
     return f"{month} {year_short} - Liked Songs"
 
 
+def _load_auth_raw() -> str:
+    """Load auth headers from a local JSON file or the YT_AUTH_HEADERS env var."""
+    local_auth_file = Path(os.environ.get("YT_AUTH_FILE", "auth.headers.json"))
+    if local_auth_file.exists():
+        return local_auth_file.read_text(encoding="utf-8").strip()
+
+    headers_raw = os.environ.get("YT_AUTH_HEADERS")
+    if headers_raw:
+        return headers_raw.strip()
+
+    print(
+        "No auth.headers.json found and YT_AUTH_HEADERS is not set.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+
+def _headers_dict_to_raw(headers: dict[str, str]) -> str:
+    """Normalize JSON header dict to the raw text format ytmusicapi setup expects."""
+    normalized = {k.lower(): v for k, v in headers.items()}
+    if not normalized.get("cookie"):
+        print("YT_AUTH_HEADERS JSON is missing the Cookie header.", file=sys.stderr)
+        sys.exit(1)
+    normalized.setdefault("x-goog-authuser", "0")
+    return "\n".join(f"{key}: {value}" for key, value in normalized.items())
+
+
+def _ensure_browser_auth_file() -> None:
+    """Ensure browser.json includes authorization so ytmusicapi detects browser auth."""
+    headers = json.loads(BROWSER_AUTH_FILE.read_text(encoding="utf-8"))
+    if headers.get("authorization") or not headers.get("cookie"):
+        return
+    headers["authorization"] = "SAPISIDHASH 0_init"
+    BROWSER_AUTH_FILE.write_text(json.dumps(headers, indent=4, sort_keys=True), encoding="utf-8")
+
+
 def init_ytmusic() -> YTMusic:
     """Initialize YTMusic from the YT_AUTH_HEADERS environment secret."""
-    headers_raw = os.environ.get("YT_AUTH_HEADERS")
-    if not headers_raw:
-        print("YT_AUTH_HEADERS environment variable is not set.", file=sys.stderr)
-        sys.exit(1)
-
-    headers_raw = headers_raw.strip()
+    headers_raw = _load_auth_raw()
     try:
         parsed = json.loads(headers_raw)
     except json.JSONDecodeError:
         parsed = None
 
     if isinstance(parsed, dict):
-        if not parsed.get("Cookie"):
-            print("YT_AUTH_HEADERS JSON is missing the Cookie header.", file=sys.stderr)
-            sys.exit(1)
-        BROWSER_AUTH_FILE.write_text(json.dumps(parsed), encoding="utf-8")
-    else:
-        from ytmusicapi.setup import setup
+        headers_raw = _headers_dict_to_raw(parsed)
 
-        auth = setup(filepath=str(BROWSER_AUTH_FILE), headers_raw=headers_raw)
-        if not auth:
-            print("Failed to parse YT_AUTH_HEADERS.", file=sys.stderr)
-            sys.exit(1)
-        BROWSER_AUTH_FILE.write_text(auth, encoding="utf-8")
+    from ytmusicapi.setup import setup
 
+    auth = setup(filepath=str(BROWSER_AUTH_FILE), headers_raw=headers_raw)
+    if not auth:
+        print("Failed to parse YT_AUTH_HEADERS.", file=sys.stderr)
+        sys.exit(1)
+
+    _ensure_browser_auth_file()
     return YTMusic(str(BROWSER_AUTH_FILE))
 
 

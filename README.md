@@ -54,12 +54,26 @@ Browser cookie auth expires periodically. If runs start failing with auth errors
 
 ## Local development
 
+Uses [uv](https://docs.astral.sh/uv/) for Python and dependencies (Python 3.12).
+
 ```bash
-python3.12 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-export YT_AUTH_HEADERS='{"Cookie": "...", ...}'
-python main.py
+uv sync
+uv run python main.py
 ```
 
-`browser.json` is created locally for auth and is gitignored. Do not commit it.
+For local auth, put captured headers in `auth.headers.json` (gitignored):
+
+```json
+{
+  "Cookie": "...",
+  "User-Agent": "...",
+  "x-origin": "https://music.youtube.com",
+  "x-goog-authuser": "0"
+}
+```
+
+GitHub Actions uses the `YT_AUTH_HEADERS` secret instead. You can also `export YT_AUTH_HEADERS='...'` — avoid putting JSON in `.env` with `uv run --env-file`; dotenv parsers strip quotes from cookie values.
+
+If `x-goog-authuser` is missing locally, the script defaults it to `0`.
+
+`browser.json` is created locally for auth and is gitignored. Do not commit it or `.env`.
